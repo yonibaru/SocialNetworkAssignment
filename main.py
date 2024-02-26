@@ -3,15 +3,28 @@ from User import User
 
 def main():
     network1 = SocialNetwork("Twitter")
-    u1 = network1.sign_up("user1","123")
-    u2 = network1.sign_up("user2","123")
-    print(network1._online.pop()._username)
-    print(network1._online.pop()._username)
-
+    u1 = network1.sign_up("user1","12345678")
+    u2 = network1.sign_up("user2","12345678")
     network1.log_out(u1)
     network1.log_out(u2)
     network1.log_in(u1)
     network1.log_in(u2)
+
+    u2.follow(u1)
+    u2.follow(u1)
+    
+    #  Creating text post
+    p1 = u1.publish_post("Text", "In 1492, Christopher Columbus set sail,\n"
+                                 "hoping to find a westward route to Asia, but instead,\n"
+                                 "he discovered the Americas, changing the course of history forever.","2","4")
+    # Creating image post
+    p2 = u2.publish_post("Image", 'image1.jpg')
+
+    # Creating sale post
+    p3 = u2.publish_post("Sale", "Toyota prius 2012", 42000, "Haifa")
+
+    print(p1._comments)
+
     
     # network2.log_out(u1)
 
