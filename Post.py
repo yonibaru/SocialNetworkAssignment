@@ -1,6 +1,6 @@
 
 class PostFactory:
-    
+    # Implemented with the "Factory" design pattern in mind.
     @staticmethod
     def createPost(original_poster,post_type,data,price=None,location=None):
         if post_type == "Text":
@@ -23,16 +23,19 @@ class Post:
         if user not in self._likes and user.isOnline():
             self._likes.add(user)
             if user is not self._original_poster:
-                pass
-                #SEND NOTIFICATION
+                self._original_poster.notify_self(user,"Like")
+       
 
     def comment(self,user,text):
         if user.isOnline():
             self._comments.append((user,text))
             if user is not self._original_poster:
-                pass
-                #SEND NOTIFICATION
+                self._original_poster.notify_self(user,"Comment",text)
 
+
+
+# The following are the subclasses that inherit from Post.
+            
 class TextPost(Post):
     def __init__(self,original_poster,text):
         super().__init__(original_poster)

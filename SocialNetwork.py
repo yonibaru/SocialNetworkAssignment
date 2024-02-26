@@ -33,15 +33,20 @@ class SocialNetwork:
         # Returning the already-registered user seems like a security breach.
         # Therefore: if we can't create a user we must prompt an Error accordingly.
 
-    def log_in(self,user):
-        if user not in self._online and user._username in self._users: # If user is registered and offline
+    def log_in(self,user,password):
+        # If user is registered and offline and the password matches:
+        if user not in self._users:
+            return
+        elif self._users.get(user) != password:
+            return
+        if user not in self._online: 
             self._online.add(user)
-            user._online = True
+            self._users.get(user)._online = True
             print(f"{user._username} connected")
 
 
     def log_out(self,user):
-        if user in self._online and user._username in self._users: #If user is registered and online
+        if user in self._online and user in self._users: #If user is registered and online
             self._online.remove(user)
             user._online = False
             print(f"{user._username} disconnected")
