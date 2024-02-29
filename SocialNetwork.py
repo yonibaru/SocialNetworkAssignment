@@ -22,9 +22,6 @@ class SocialNetwork:
             print(f"The social network {name} was created!")
         return cls._network
     
-    def __str__(self):
-        pass
-    
     #username: string, password: string
     def sign_up(self,username,password):
         if self._validNewUser(username,password):
@@ -72,6 +69,14 @@ class SocialNetwork:
     def _getUserObject(self,username):
         if username in self._users:
             return self._users.get(username)
+        
+    def __str__(self):
+        stringify = f"{self._name} social network:\n"
+        for user in self._users.values():
+            stringify += f"{user.stringify()}\n"
+        stringify += "\n"
+        return stringify
+
 
         
 

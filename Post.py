@@ -25,7 +25,15 @@ class Post:
             self._likes.add(userObject)
             if userObject is not self._getOPObject():
                 self._getOPObject().notify_self(userObject,"Like") #Notify OP that userObject liked his post
-       
+    
+    def stringify(self):
+        pass
+
+    def __str__(self):
+        return self.stringify()
+    
+    def print(self):
+        print(self.stringfy())
 
     def comment(self,userObject,text):
         if userObject.isOnline():
@@ -36,6 +44,9 @@ class Post:
     def _getOPObject(self):
         return self._original_poster_obj
 
+    def _getOPUsername(self):
+        return self._getOPObject().getUsername()
+
 
 
 # The following are the subclasses that inherit from Post.
@@ -44,16 +55,28 @@ class TextPost(Post):
     def __init__(self,original_poster_object,text):
         super().__init__(original_poster_object)
         self._text = text
+        self._getOPObject().notify_followers("Post")
+        print(self) #Print the post to console
+
+    def stringify(self):
+        return f"{self._getOPUsername()} published a post:\n\"{self._text}\"\n"
 
 class ImagePost(Post):
     def __init__(self,original_poster_object,image_url):
         super().__init__(original_poster_object)
         self._image_url = image_url
+        self._getOPObject().notify_followers("Post")
+        print(self) #Print the post to console
+
     
     def display(self):
         if self._image_url:
             print("Shows picture")
     
+    def stringify(self):
+        return f"{self._getOPUsername()} posted a picture\n"
+
+
 
  
 
@@ -64,15 +87,16 @@ class SalePost(Post):
         self._price = price
         self._location = location
         self._isAvailable = True
+        self._getOPObject().notify_followers("Post")
+        print(self) #Print the post to console
+
 
     def sold(self,op_password):
         if not self._isAvailable :
             return #already sold
         if self._getOPObject().getPassword() == op_password:
             self._isAvailable = False
-            print(f"{self._getOPObject().getUsername()}'s product is sold")
-
-
+            print(f"{self._getOPUsername()}'s product is sold")
 
     def discount(self,percentage,op_password):
         if not self._isAvailable:
@@ -80,7 +104,10 @@ class SalePost(Post):
         if self._getOPObject().getPassword() == op_password:
             newPrice = self._price - (self._price * (percentage/100))
             self._price = newPrice
-            print(f"Discount on {self._getOPObject().getUsername()} product! the new price is: {newPrice}")
+            print(f"Discount on {self._getOPUsername()} product! the new price is: {newPrice}")
+
+    def stringify(self):
+        return f"{self._getOPUsername()} posted a product for sale:\n{'For sale!' if self._isAvailable else 'Sold!'} {self._product_name}, price: {self._price}, pickup from: {self._location}\n"
 
 
 

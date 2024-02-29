@@ -9,6 +9,7 @@ class User:
         # Set is the ideal data structure here in order to insure each follower is unique. 
         self._followers = set() #Set of pointers to user objects.
         self._notifications = list() #An ordered list of strings
+        self._num_of_posts = 0
 
     def follow(self,userObject):
         if not self._online:
@@ -32,12 +33,16 @@ class User:
     def publish_post(self,post_type,data,price=None,location=None):
         if not self._online:
             return;
+        self._num_of_posts += 1
         return PostFactory.createPost(self,post_type,data,price,location)
 
     def print_notifications(self):
         if not self._online:
             return
-        print(self._notifications)
+        print(f"{self.getUsername()}'s notifications:")
+        for notification in self._notifications:
+            print(notification)
+
 
     def notify_self(self,notifierObject,type,comment=None):
         notifier_username = notifierObject.getUsername()
@@ -53,7 +58,7 @@ class User:
             return
         self._notifications.append(notification_text)
 
-    def notify_followers(self,type,comment):
+    def notify_followers(self,type,comment=None):
         for follower in self._followers:
             follower.notify_self(self,type,comment) #Notifer is 'self'
 
@@ -75,7 +80,11 @@ class User:
     def getUsername(self):
         return self._username
 
+    def stringify(self):
+        return (f"User name: {self._username}, Number of posts: {self._num_of_posts}, "
+                f"Number of followers: {len(self._followers)}")
+
     def __str__(self):
-        return f"{self._username}"
+        return self.stringify()
 
         

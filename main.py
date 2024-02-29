@@ -97,7 +97,7 @@ def main():
     print()
 
     # Network printing
-    # print(network, end='')
+    print(network, end='')
 
 
 if __name__ == '__main__':
