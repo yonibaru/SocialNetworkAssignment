@@ -9,7 +9,7 @@ class SocialNetwork:
     _online = set() #Set of username strings.
 
     # Dictionary is the ideal data structre because each user requires a unique name and we need a fast way to manipulate the user table.
-    _users = dict() #username:<user_object_pointer>
+    _users = dict() #username --> <user_object_pointer>
 
 
     # def __init__(self):
@@ -19,11 +19,13 @@ class SocialNetwork:
         if cls._network is None:
             cls._network = super().__new__(cls) #the magical line, overriding .object's __new__ method
             cls._network._name = name
+            print(f"The social network {name} was created!")
         return cls._network
     
     def __str__(self):
         pass
     
+    #username: string, password: string
     def sign_up(self,username,password):
         if self._validNewUser(username,password):
             # Register the new user
@@ -37,22 +39,23 @@ class SocialNetwork:
         # Returning the already-registered user seems like a security breach.
         # Therefore: if we can't create a user we must prompt an Error accordingly.
 
+    #username: string, password: string
     def log_in(self,username,password):
         # If user is registered, offline and the password matches:
         if username not in self._users:
             return
-        elif self.getUserObject(username).getPassword() != password:
+        elif self._getUserObject(username).getPassword() != password:
             return
         if username not in self._online: 
             self._online.add(username)
-            self.getUserObject.setOnline()
+            self._getUserObject(username).setOnline()
             print(f"{username} connected")
 
-
+    #username: string
     def log_out(self,username):
         if username in self._online and username in self._users: #If user is registered and online
             self._online.remove(username)
-            self.getUserObject(username).setOffline()
+            self._getUserObject(username).setOffline()
             print(f"{username} disconnected")
 
     def _validNewUser(self,username,password):
@@ -66,7 +69,7 @@ class SocialNetwork:
         else: 
             return True
     
-    def getUserObject(self,username):
+    def _getUserObject(self,username):
         if username in self._users:
             return self._users.get(username)
 

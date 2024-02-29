@@ -37,17 +37,18 @@ class User:
     def print_notifications(self):
         if not self._online:
             return
+        print(self._notifications)
 
-    def notify_self(self,notifier,type,comment=None):
-        notifier_name = notifier._username
+    def notify_self(self,notifierObject,type,comment=None):
+        notifier_username = notifierObject.getUsername()
         if type == "Like":
-            notification_text = f"{notifier_name} liked your post"
+            notification_text = f"{notifier_username} liked your post"
             print(f"notification to {self._username}: {notification_text}")
         elif type == "Comment":
-            notification_text = f"{notifier_name} commented on your post"
+            notification_text = f"{notifier_username} commented on your post"
             print(f"notification to {self._username}: {notification_text}: {comment}")
         elif type == "Post":
-            notification_text = f"{notifier_name} has a new post"
+            notification_text = f"{notifier_username} has a new post"
         else:
             return
         self._notifications.append(notification_text)
