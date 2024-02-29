@@ -13,20 +13,25 @@ class PostFactory:
             raise ValueError("Invalid post type")
 
 class Post:
-
-
     def __init__(self,original_poster_object):
         self._original_poster_obj = original_poster_object
         self._likes = set() # A set of pointers to user objects.
-        self._comments = list() #Array of tuples, each tuples representing a comment: The poster of said comment and the text content of the comment. (user,text)
+        self._comments = list() #Array of tuples, each tuple representing a comment: The (pointer) userObject of the comment poster and the text content of the comment. (<userObject pointer>,text)
     
     def like(self,userObject):
         if userObject not in self._likes and userObject.isOnline():
             self._likes.add(userObject)
             if userObject is not self._getOPObject():
                 self._getOPObject().notify_self(userObject,"Like") #Notify OP that userObject liked his post
-    
+
+    def comment(self,userObject,text):
+        if userObject.isOnline():
+            self._comments.append((userObject,text))
+            if userObject is not self._getOPObject():
+                self._getOPObject().notify_self(userObject,"Comment",text) #Notify OP that userObject has commented on his post.
+
     def stringify(self):
+        # Each subclass implements their own 'stringify' method.
         pass
 
     def __str__(self):
@@ -34,12 +39,6 @@ class Post:
     
     def print(self):
         print(self.stringfy())
-
-    def comment(self,userObject,text):
-        if userObject.isOnline():
-            self._comments.append((userObject,text))
-            if userObject is not self._getOPObject():
-                self._getOPObject().notify_self(userObject,"Comment",text) #Notify OP that userObject has commented on his post.
 
     def _getOPObject(self):
         return self._original_poster_obj
@@ -67,7 +66,6 @@ class ImagePost(Post):
         self._image_url = image_url
         self._getOPObject().notify_followers("Post")
         print(self) #Print the post to console
-
     
     def display(self):
         if self._image_url:
@@ -75,10 +73,6 @@ class ImagePost(Post):
     
     def stringify(self):
         return f"{self._getOPUsername()} posted a picture\n"
-
-
-
- 
 
 class SalePost(Post):
     def __init__(self,original_poster_object,product_name,price,location):

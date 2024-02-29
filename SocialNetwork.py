@@ -6,18 +6,17 @@ class SocialNetwork:
     _network = None
 
     # Set is the ideal data structure, because we need to insure each online user is unique.
-    _online = set() #Set of username strings.
+    # Set of username strings.
+    _online = set() 
 
-    # Dictionary is the ideal data structre because each user requires a unique name and we need a fast way to manipulate the user table.
-    _users = dict() #username --> <user_object_pointer>
+    # Dictionary is the ideal data structure for this, because each user requires a unique name and we need a fast way to manipulate the user table.
+    # Keys are usernames and values are pointers to the actual user object. Without storing some pointer to a user object, the network cannot access a user's information and change it - this is a feature we'd like.
+    _users = dict()
 
-
-    # def __init__(self):
-    #     pass
-
+    #Singleton implementation
     def __new__(cls,name):
         if cls._network is None:
-            cls._network = super().__new__(cls) #the magical line, overriding .object's __new__ method
+            cls._network = super().__new__(cls) #the magical line, overriding .object's __new__ method to insure one instance can exist at a time.
             cls._network._name = name
             print(f"The social network {name} was created!")
         return cls._network
@@ -27,7 +26,7 @@ class SocialNetwork:
         if self._validNewUser(username,password):
             # Register the new user
             newUser = User(username,password)
-            self._users.update({username:newUser}) # I think it's a good idea to have the value being a poiner to the actual object rather than just name:password. This way, we can access each user's unique methods.
+            self._users.update({username:newUser}) # Appending to a dict.
             self._online.add(username)
             return newUser
         # If _validNewUser returns False, it will raise an Error. Why?:
@@ -55,6 +54,7 @@ class SocialNetwork:
             self._getUserObject(username).setOffline()
             print(f"{username} disconnected")
 
+    # Used to validate whether a new users information is valid for registeration.
     def _validNewUser(self,username,password):
         passLength = len(password)
         if username is None or password is None:
@@ -66,6 +66,7 @@ class SocialNetwork:
         else: 
             return True
     
+    # Simple getter, we are using this a lot.
     def _getUserObject(self,username):
         if username in self._users:
             return self._users.get(username)
@@ -74,7 +75,6 @@ class SocialNetwork:
         stringify = f"{self._name} social network:\n"
         for user in self._users.values():
             stringify += f"{user.stringify()}\n"
-        stringify += "\n"
         return stringify
 
 

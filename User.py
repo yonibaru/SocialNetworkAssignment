@@ -1,6 +1,6 @@
 from Post import PostFactory
 
-#Followers of said user are also designed with the 'Observer' design pattern, each follower acting as an Observer.
+#The "followers" feature of a user are also designed with the 'Observer' design pattern in mind - each follower acting as an Observer.
 class User:
     def __init__(self,username,password):
         self._username = username
@@ -21,7 +21,6 @@ class User:
             print(f"{self._username} started following {username}")
 
     def unfollow(self,userObject):
-
         if not self._online:
             return
         

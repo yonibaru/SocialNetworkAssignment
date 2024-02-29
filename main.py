@@ -1,8 +1,6 @@
 from SocialNetwork import SocialNetwork
 from User import User
 
-
-
 def main():
     # Creating the network
     network = SocialNetwork("Twitter")
