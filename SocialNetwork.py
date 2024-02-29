@@ -4,8 +4,13 @@ from User import User
 class SocialNetwork:
     _name = ""
     _network = None
-    _online = set() # Set is the ideal data structure, because we need to insure each online user is unique.
-    _users = dict() # Dictionary is the ideal data structre because each user requires a unique name and we need a fast way to manipulate the user table.
+
+    # Set is the ideal data structure, because we need to insure each online user is unique.
+    _online = set() #Set of username strings.
+
+    # Dictionary is the ideal data structre because each user requires a unique name and we need a fast way to manipulate the user table.
+    _users = dict() #username:<user_object_pointer>
+
 
     # def __init__(self):
     #     pass
@@ -19,49 +24,51 @@ class SocialNetwork:
     def __str__(self):
         pass
     
-    def sign_up(self,name,password):
-        if self._validNewUser(name,password):
+    def sign_up(self,username,password):
+        if self._validNewUser(username,password):
             # Register the new user
-            newUser = User(name,password)
-            self._users.update({name:password})
-            self._online.add(newUser)
-            print("new user registered")
+            newUser = User(username,password)
+            self._users.update({username:newUser}) # I think it's a good idea to have the value being a poiner to the actual object rather than just name:password. This way, we can access each user's unique methods.
+            self._online.add(username)
             return newUser
         # If _validNewUser returns False, it will raise an Error. Why?:
         # The sign_up method is ALWAYS expected to return the new registered user. We can't return None here since the next time someone will try to access
-        # one of the methods a NULL user, we will be prompted an error anyway.
+        # one of the methods of a NULL user, we will be prompted an error anyway.
         # Returning the already-registered user seems like a security breach.
         # Therefore: if we can't create a user we must prompt an Error accordingly.
 
-    def log_in(self,user,password):
-        # If user is registered and offline and the password matches:
-        if user not in self._users:
+    def log_in(self,username,password):
+        # If user is registered, offline and the password matches:
+        if username not in self._users:
             return
-        elif self._users.get(user) != password:
+        elif self.getUserObject(username).getPassword() != password:
             return
-        if user not in self._online: 
-            self._online.add(user)
-            self._users.get(user)._online = True
-            print(f"{user._username} connected")
+        if username not in self._online: 
+            self._online.add(username)
+            self.getUserObject.setOnline()
+            print(f"{username} connected")
 
 
-    def log_out(self,user):
-        if user in self._online and user in self._users: #If user is registered and online
-            self._online.remove(user)
-            user._online = False
-            print(f"{user._username} disconnected")
+    def log_out(self,username):
+        if username in self._online and username in self._users: #If user is registered and online
+            self._online.remove(username)
+            self.getUserObject(username).setOffline()
+            print(f"{username} disconnected")
 
-    def _validNewUser(self,user,password):
+    def _validNewUser(self,username,password):
         passLength = len(password)
-        if user is None or password is None:
+        if username is None or password is None:
             raise TypeError("Invalid username/password: cannot be equal to None.")
         elif passLength < 4 or passLength > 8:
             raise TypeError("Invalid password length: password has to be between 4 and 8 characters.")
-        elif user in self._users:
+        elif username in self._users:
             raise TypeError("Invalid username: username already taken.")    
         else: 
             return True
     
+    def getUserObject(self,username):
+        if username in self._users:
+            return self._users.get(username)
 
         
 

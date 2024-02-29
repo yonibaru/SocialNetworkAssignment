@@ -6,22 +6,28 @@ class User:
         self._username = username
         self._password = password
         self._online = True
-        self._followers = set() # Set is the ideal data strucutre here in order to insure each follower is unique. 
-        self._notifications = list()
+        # Set is the ideal data structure here in order to insure each follower is unique. 
+        self._followers = set() #Set of pointers to user objects.
+        self._notifications = list() #An ordered list of strings
 
-    def follow(self,user):
+    def follow(self,userObject):
         if not self._online:
             return
-        if user is not self and self not in user._followers:
-            user._followers.add(self)
-            print(f"{self._username} started following {user._username}")
+        
+        username = userObject.getUsername()
+        if userObject is not self and self not in userObject._followers:
+            userObject._followers.add(self)
+            print(f"{self._username} started following {username}")
 
-    def unfollow(self,user):
+    def unfollow(self,userObject):
+
         if not self._online:
             return
-        if user is not self and self in user._followers:
-            user._followers.remove(self)
-            print(f"{self._username} unfollowed {user._username}")
+        
+        username = userObject.getUsername()
+        if userObject is not self and self in userObject._followers:
+            userObject._followers.remove(self)
+            print(f"{self._username} unfollowed {username}")
 
     def publish_post(self,post_type,data,price=None,location=None):
         if not self._online:
@@ -32,12 +38,6 @@ class User:
         if not self._online:
             return
 
-    def isOnline(self):
-        return self._online
-
-    def __str__(self):
-        return f"{self._username}"
-    
     def notify_self(self,notifier,type,comment=None):
         notifier_name = notifier._username
         if type == "Like":
@@ -55,3 +55,26 @@ class User:
     def notify_followers(self,type,comment):
         for follower in self._followers:
             follower.notify_self(self,type,comment) #Notifer is 'self'
+
+    #Getters and setters
+            
+    def isOnline(self):
+        return self._online
+    
+    def setOffline(self):
+        self._online = False
+    
+    def setOnline(self):
+        self._online = True
+    
+    def getPassword(self):
+        #Terrible practice, but let's assume this is a hashed password.
+        return self._password
+
+    def getUsername(self):
+        return self._username
+
+    def __str__(self):
+        return f"{self._username}"
+
+        
